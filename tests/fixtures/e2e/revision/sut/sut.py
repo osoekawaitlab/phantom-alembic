@@ -71,7 +71,7 @@ version_path_separator = os
 # are written from script.py.mako
 # output_encoding = utf-8
 
-sqlalchemy.url = sqlite:///%(here)s/test.db
+sqlalchemy.url = sqlite:///{this_fixture_root}/test.db
 
 
 [post_write_hooks]

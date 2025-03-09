@@ -49,7 +49,7 @@ class PhantomAlembic:
                 f.write(SCRIPT_MAKO_STRING)
             if self.version_data_path.exists():
                 with open(self.version_data_path, "r", encoding="utf-8") as f:
-                    version_data = [json.loads(ln) for ln in f.readlines()]
+                    version_data = [json.loads(ln.strip()) for ln in f.readlines()]
             else:
                 version_data = []
             for version_data_item in version_data:
