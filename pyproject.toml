@@ -1,0 +1,114 @@
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core >=3.8.0"]
+
+[project]
+name = "phantom_alembic"
+description = "phantom_alembic: A streamlined database migration tool based on Alembic that eliminates the need for configuration files in your repository. phantom_alembic replaces traditional Alembic ini files, script.py.mako, and env.py with temporary file generation, allowing you to maintain only the essential revision files. Clean, efficient database migrations without the clutter."
+authors = [
+    {name = "osoken"},
+]
+dynamic = [
+    "version", 
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+]
+
+dependencies = [
+    "alembic",
+]
+
+[project.urls]
+Source = "https://github.com/osoekawaitlab/phantom-alembic"
+
+[tool.setuptools]
+packages=["phantom_alembic"]
+
+[tool.setuptools.package-data]
+phantom_alembic = ["py.typed"]
+
+[project.scripts]
+phantom_alembic = "phantom_alembic.main:main"
+
+[project.optional-dependencies]
+dev=[
+    "black",
+    "flake8",
+    "pyproject-flake8",
+    "pytest",
+    "mypy",
+    "tox",
+    "isort",
+    "pytest-mock",
+    "pytest-cov",
+]
+prod=[
+    "psycopg2",
+]
+
+[tool.pytest.ini_options]
+addopts = ["-sv", "--doctest-modules", "--cov=src/phantom_alembic", "--cov-report=xml", "--cov-report=term-missing"]
+testpaths = ["tests", "src/phantom_alembic"]
+filterwarnings = [
+    "error",
+]
+markers = [
+    "e2e: marks tests as end-to-end tests",
+]
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = "E203, E701"
+per-file-ignores = ["*.pyi:E301,E302,E305"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+mypy_path = ["stubs"]
+
+[tool.isort]
+profile = "black"
+
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    skipsdist = true
+    envlist = py310
+
+    [testenv]
+    setenv = 
+        VIRTUALENV_PIP = 25.0
+    deps =
+        -e .[dev]
+    commands = 
+        black src/phantom_alembic tests
+        isort src/phantom_alembic tests
+        pytest -m "not e2e"
+        pflake8 src/phantom_alembic/ tests/ stubs/
+        mypy src/phantom_alembic --strict
+        mypy tests --strict
+
+    [testenv:e2e]
+    setenv = 
+        VIRTUALENV_PIP = 25.0
+    deps =
+        -e .[dev]
+    commands =
+        black src/phantom_alembic tests
+        isort src/phantom_alembic tests
+        pytest -m e2e
+"""
