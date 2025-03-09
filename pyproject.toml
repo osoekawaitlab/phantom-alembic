@@ -50,13 +50,13 @@ dev=[
     "isort",
     "pytest-mock",
     "pytest-cov",
-]
-prod=[
-    "psycopg2",
+    "pexpect",
+    "sqlalchemy",
+    "types-pexpect",
 ]
 
 [tool.pytest.ini_options]
-addopts = ["-sv", "--doctest-modules", "--cov=src/phantom_alembic", "--cov-report=xml", "--cov-report=term-missing"]
+addopts = ["-sv", "--doctest-modules", "--ignore=tests/fixtures", "--cov=src/phantom_alembic", "--cov-report=xml", "--cov-report=term-missing"]
 testpaths = ["tests", "src/phantom_alembic"]
 filterwarnings = [
     "error",
@@ -79,6 +79,7 @@ python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 mypy_path = ["stubs"]
+exclude = "tests/fixtures"
 
 [tool.isort]
 profile = "black"
