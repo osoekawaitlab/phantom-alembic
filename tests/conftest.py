@@ -33,3 +33,22 @@ def e2e_revision_reference_alembic_assets(e2e_revision_assets: Path) -> Generato
 @pytest.fixture
 def e2e_revision_sut_alembic_assets(e2e_revision_assets: Path) -> Generator[Path, None, None]:
     yield e2e_revision_assets / "sut"
+
+
+@pytest.fixture
+def e2e_upgrade_assets(e2e_path: Path) -> Generator[Path, None, None]:
+    with TemporaryDirectory() as temp_dir:
+        temp_dir_path = Path(temp_dir)
+        asset_path = temp_dir_path / "assets"
+        copytree(e2e_path / "upgrade", asset_path)
+        yield asset_path
+
+
+@pytest.fixture
+def e2e_upgrade_reference_alembic_assets(e2e_upgrade_assets: Path) -> Generator[Path, None, None]:
+    yield e2e_upgrade_assets / "reference"
+
+
+@pytest.fixture
+def e2e_upgrade_sut_alembic_assets(e2e_upgrade_assets: Path) -> Generator[Path, None, None]:
+    yield e2e_upgrade_assets / "sut"

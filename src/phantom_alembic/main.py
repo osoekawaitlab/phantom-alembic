@@ -64,7 +64,11 @@ def main() -> None:
     revision_parser = subcommands.add_parser("revision")
     revision_parser.add_argument("--message", "-m", default=None, type=str, nargs="?")
     revision_parser.add_argument("--autogenerate", "-a", action="store_true")
+    upgrade_parser = subcommands.add_parser("upgrade")
+    upgrade_parser.add_argument("revision", type=str)
     args = parser.parse_args()
     phantom_alembic = load_object_from_path(args.module)
     if args.command == "revision":
         phantom_alembic.revision(message=args.message, autogenerate=args.autogenerate)
+    elif args.command == "upgrade":
+        phantom_alembic.upgrade(revision=args.revision)

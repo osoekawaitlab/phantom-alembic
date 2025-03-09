@@ -125,3 +125,7 @@ class PhantomAlembic:
                 message=message if message is not None else "empty message",
                 autogenerate=autogenerate,
             )
+
+    def upgrade(self, revision: str) -> None:
+        with self.context() as context:
+            command.upgrade(context.alembic_config, revision)
