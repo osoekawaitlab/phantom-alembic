@@ -1,9 +1,9 @@
 import json
-from contextlib import AbstractContextManager
+from contextlib import AbstractContextManager, contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import TracebackType
-from typing import Optional, Type
+from typing import Generator, Optional, Type
 
 from alembic import command
 from alembic.config import Config
@@ -96,6 +96,13 @@ class PhantomAlembic:
             return ENV_CONTENT_TEMPLATE.format()
         return self._env_content
 
+    @contextmanager
+    def context(self) -> Generator[PhantomAlembicContext, None, None]:
+        with TemporaryDirectory() as temp_dir:
+            temp_dir_path = Path(temp_dir)
+            with PhantomAlembicContext(self, temp_dir_path) as context:
+                yield context
+
     def _get_migrations_path(self, temp_dir_path: Path) -> Path:
         return temp_dir_path / "migrations"
 
@@ -112,11 +119,9 @@ class PhantomAlembic:
         return config
 
     def revision(self, message: Optional[str] = None, autogenerate: bool = False) -> None:
-        with TemporaryDirectory() as temp_dir:
-            temp_dir_path = Path(temp_dir)
-            with PhantomAlembicContext(self, temp_dir_path) as context:
-                command.revision(
-                    context.alembic_config,
-                    message=message if message is not None else "empty message",
-                    autogenerate=autogenerate,
-                )
+        with self.context() as context:
+            command.revision(
+                context.alembic_config,
+                message=message if message is not None else "empty message",
+                autogenerate=autogenerate,
+            )
