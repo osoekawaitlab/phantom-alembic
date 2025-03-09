@@ -41,6 +41,8 @@ def test_e2e_revision(
     sut_proc = spawn(f"phantom_alembic sut:sut revision {options}", cwd=e2e_revision_sut_alembic_assets, env=os.environ)
     sut_proc.expect(EOF)
     sut_proc.close()
+    if sut_proc.exitstatus != 0:
+        print(sut_proc.before)
     assert sut_proc.exitstatus == 0
     with open(e2e_revision_sut_alembic_assets / "versions.jsonl", "r", encoding="utf-8") as f:
         actual_version_file_name_to_content_list = sorted(
