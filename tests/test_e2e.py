@@ -22,7 +22,7 @@ def normalize_version_file_contents(contents: str) -> str:
     )
 
 
-@mark.parametrize("options", ["", '-m "hoge hoge"', '--message "hoge hoge"'])
+@mark.parametrize("options", ["", '-m "hoge hoge"', '--message "hoge hoge"', '--autogenerate -m "message"'])
 def test_e2e_revision(
     e2e_revision_reference_alembic_assets: Path, e2e_revision_sut_alembic_assets: Path, options: str
 ) -> None:

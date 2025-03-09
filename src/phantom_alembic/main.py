@@ -63,7 +63,8 @@ def main() -> None:
     subcommands = parser.add_subparsers(dest="command")
     revision_parser = subcommands.add_parser("revision")
     revision_parser.add_argument("--message", "-m", default=None, type=str, nargs="?")
+    revision_parser.add_argument("--autogenerate", "-a", action="store_true")
     args = parser.parse_args()
     phantom_alembic = load_object_from_path(args.module)
     if args.command == "revision":
-        phantom_alembic.revision(args.message)
+        phantom_alembic.revision(message=args.message, autogenerate=args.autogenerate)
