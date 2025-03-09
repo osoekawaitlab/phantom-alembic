@@ -36,6 +36,10 @@ class PhantomAlembicContext(AbstractContextManager["PhantomAlembicContext"]):
     def dir_path(self) -> Path:
         return self._dir_path
 
+    @property
+    def alembic_config(self) -> Config:
+        return self.phantom_alembic.gen_alembic_config(self.dir_path)
+
     def __exit__(
         self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
     ) -> None:
@@ -65,9 +69,6 @@ class PhantomAlembicContext(AbstractContextManager["PhantomAlembicContext"]):
             with open(self.version_path / version_data_item["name"], "w", encoding="utf-8") as f:
                 f.write(version_data_item["content"])
         return self
-
-    def get_alembic_config(self) -> Config:
-        return self.phantom_alembic.gen_alembic_config(self.dir_path)
 
 
 class PhantomAlembic:
@@ -114,10 +115,8 @@ class PhantomAlembic:
         with TemporaryDirectory() as temp_dir:
             temp_dir_path = Path(temp_dir)
             with PhantomAlembicContext(self, temp_dir_path) as context:
-                config = context.get_alembic_config()
                 command.revision(
-                    config,
+                    context.alembic_config,
                     message=message if message is not None else "empty message",
-                    version_path=str(self._get_version_path(temp_dir_path)),
                     autogenerate=autogenerate,
                 )
