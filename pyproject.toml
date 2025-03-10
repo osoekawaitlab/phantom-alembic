@@ -61,9 +61,7 @@ testpaths = ["tests", "src/phantom_alembic"]
 filterwarnings = [
     "error",
 ]
-markers = [
-    "e2e: marks tests as end-to-end tests",
-]
+markers = []
 
 [tool.black]
 line-length = 120
@@ -102,14 +100,4 @@ legacy_tox_ini = """
         pflake8 src/phantom_alembic/ tests/ stubs/
         mypy src/phantom_alembic --strict
         mypy tests --strict
-
-    [testenv:e2e]
-    setenv = 
-        VIRTUALENV_PIP = 25.0
-    deps =
-        -e .[dev]
-    commands =
-        black src/phantom_alembic tests
-        isort src/phantom_alembic tests
-        pytest -m e2e
 """
